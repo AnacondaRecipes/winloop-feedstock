@@ -45,7 +45,9 @@ requirements:
   "test_process_streams_redirect",
 # >  raise CalledProcessError(retcode, cmd)
 # E  subprocess.CalledProcessError:
-  "test_signals_fork_in_thread"
+  "test_signals_fork_in_thread",
+# AssertionError: 0.2007368999766186 not less than 0.07
+  "test_call_at"
 ] %}
 
 test:

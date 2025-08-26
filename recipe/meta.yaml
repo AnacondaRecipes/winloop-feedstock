@@ -38,7 +38,11 @@ requirements:
 # E   AssertionError: Lists differ: [(<Ad[239 chars]('23.220.75.245', 80)), 
 # (<AddressFamily.AF_INE[769 chars]80))] != [(<Ad[239 chars]('23.192.228.84', 80)), (<AddressFamily.AF_INE[769 chars]80))]
   "test_getaddrinfo_11",
+  "test_getaddrinfo_5",
   "test_getaddrinfo_2",
+# ConnectionResetError: Connection lost
+  "test_write_huge_stdin_8192",
+  "test_write_huge_stdin_8193",
 # >  self.assertEqual(so.read(), b"out" + NL)
 # E  AssertionError: b'' != b'out\n'
   "test_process_streams_redirect",

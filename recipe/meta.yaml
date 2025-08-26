@@ -1,16 +1,18 @@
 {% set name = "winloop" %}
-{% set version = "0.2.1" %}
+{% set version = "0.2.2" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/winloop-{{ version }}.tar.gz
-  sha256: 451733a3bca8deac3d12c0979592a28a1d36bc4b127c7b2815354c226b852645
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b967a8bcc45cb9a6845e5d4fc77a493b8b9928b44b9230ff336b9b10ae399132
+  patches:
+    - patches/0001-unvendor-libuv.patch
 
 build:
-  skip: true  # [not win]
+  skip: true  # [py<39]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
 
@@ -22,29 +24,55 @@ requirements:
     - python
     - setuptools >=60
     - wheel
-    - cython >=3.0,<4.dev0
+    - cython >=3.1.2
     - pip
+    - libuv {{ libuv }}
   run:
     - python
+    - libuv
+
+{% set skip_keywords = [
+# >       self._run_server_test(test, use_ssl="yes")
+# E   AssertionError: True is not false
+  "test_create_ssl_server_manual_connection_lost",
+# E   AssertionError: Lists differ: [(<Ad[239 chars]('23.220.75.245', 80)), 
+# (<AddressFamily.AF_INE[769 chars]80))] != [(<Ad[239 chars]('23.192.228.84', 80)), (<AddressFamily.AF_INE[769 chars]80))]
+  "test_getaddrinfo_11",
+  "test_getaddrinfo_2",
+# >  self.assertEqual(so.read(), b"out" + NL)
+# E  AssertionError: b'' != b'out\n'
+  "test_process_streams_redirect",
+# >  raise CalledProcessError(retcode, cmd)
+# E  subprocess.CalledProcessError:
+  "test_signals_fork_in_thread"
+] %}
 
 test:
+  source_files:
+    - tests
+    - mypy.ini
+    - .flake8
   imports:
     - winloop
   commands:
     - pip check
+    - pytest -v tests -k "not ({{ skip_keywords | join(' or ') }})"
   requires:
     - pip
+    - pytest
+    - pyopenssl >=23.0,<25.2
 
 about:
   home: https://github.com/Vizonex/Winloop
   summary: Windows version of uvloop
-  license: Apache-2.0 AND MIT AND EPL-2.0
+  license: Apache-2.0 AND MIT
+  license_family: OTHER
   license_file:
     - LICENSE-APACHE
     - LICENSE-MIT
-    - vendor/libuv/LICENSE
-    - vendor/libuv/LICENSE-docs
-    - vendor/libuv/LICENSE-extra
+  description: Windows version of uvloop
+  doc_url: https://github.com/Vizonex/Winloop/blob/main/README.md
+  dev_url: https://github.com/Vizonex/Winloop
 
 extra:
   recipe-maintainers:

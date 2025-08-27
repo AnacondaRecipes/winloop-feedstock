@@ -12,7 +12,7 @@ source:
     - patches/0001-unvendor-libuv.patch
 
 build:
-  skip: true  # [py<39]
+  skip: true  # [(not win) or py<39]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
 

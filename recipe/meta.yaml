@@ -1,5 +1,5 @@
 {% set name = "winloop" %}
-{% set version = "0.2.2" %}
+{% set version = "0.3.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: b967a8bcc45cb9a6845e5d4fc77a493b8b9928b44b9230ff336b9b10ae399132
+  sha256: f86af8fa3f853bdbdb2b441f856cda7ec6e84a68f82636db34e54709ebcf0a7c
   patches:
     - patches/0001-unvendor-libuv.patch
 
@@ -22,11 +22,11 @@ requirements:
     - {{ stdlib('c') }}
   host:
     - python
+    - cython >=3.1.4
+    - libuv {{ libuv }}
+    - pip
     - setuptools >=60
     - wheel
-    - cython >=3.1.2
-    - pip
-    - libuv {{ libuv }}
   run:
     - python
     - libuv
@@ -63,7 +63,7 @@ test:
   requires:
     - pip
     - pytest
-    - pyopenssl >=23.0,<25.2
+    - pyopenssl >=23.0,<25.4
 
 about:
   home: https://github.com/Vizonex/Winloop
